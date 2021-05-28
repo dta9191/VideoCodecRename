@@ -1,7 +1,7 @@
 # VideoCodecRename
 Python program using ffprobe3 to recursively search all files in a directory, identify video files, and add their codec to the file name for easy filtering in any system. Easily modified to find, rename, move, and sort all kinds of files using ffmpeg. This is just the video specific program.
 
-![VideoCodecRename_codec_added](https://user-images.githubusercontent.com/57654891/119913564-3561cc00-bf2c-11eb-8a25-ce453b790543.png)
+![VideoCodecRename_startup](https://user-images.githubusercontent.com/57654891/119916422-807edd80-bf32-11eb-86bd-f5b76f59cb6b.png)
 
 
 Combined with HBBatchBeast for bulk video conversion, standardizing video collections from multiple sources is far easier and faster.
@@ -26,22 +26,22 @@ Descriptions of buttons and features:
 "List All Files":
 
 Show all files of all types found in the directory(recursive lookup).
-  ![VideoCodecRename_Listed_files](https://user-images.githubusercontent.com/57654891/119913606-588c7b80-bf2c-11eb-9fa2-0fd3ffb73665.png)
+  ![VideoCodecRename_list_all](https://user-images.githubusercontent.com/57654891/119916346-59281080-bf32-11eb-9ebb-9a85613f5a75.png)
 
 "Find Video Files": 
 
 Attempts to open every file with ffmpeg and read its stream data and determine the codec used for stream 0(usually the main video stream for video files). It compares the codec found to the <VideoCodecs> list, and if a match is found, prints the file directory and name, as well as the video codec to the output box in the main window.I have the option to ignore all files that don't match a known video file extension type(such as .mp4), but I exclude it in order to find video files that may be hiding under different extensions. The ffporbe3 module should be able to open the video regardless of extension. No changes are made to files using this option.
-  ![VideoCodecRename_filtered_videos](https://user-images.githubusercontent.com/57654891/119913621-604c2000-bf2c-11eb-81e2-0be7db10af29.png)
+  ![VideoCodecRename_list_videos](https://user-images.githubusercontent.com/57654891/119916373-66dd9600-bf32-11eb-9cc8-176fc1e404c7.png)
 
 "Add Video Codec To File Name":
   
 This is the main feature of the program, which renames the file by adding [<codec>] before the file extension. Example: farts.mp4, encoded with h265 becomes farts[h265].mp4. The square brackets([]) were chosen as media software such as Plex, EMby, and Jellyfin will ignore anything in brackets in the file name. I started with Plex, which is why this was important to me. I didn't want the codec name to appear anywhere users could see it. It worked just fine last I checked. Please verify that this will not be a problem.
-  ![VideoCodecRename_codec_added](https://user-images.githubusercontent.com/57654891/119913764-b8832200-bf2c-11eb-8ff6-38b0ab32ac2c.png)
+  ![VideoCodecRename_Add](https://user-images.githubusercontent.com/57654891/119916395-70ff9480-bf32-11eb-8058-578004e8dad1.png)
 
 "Remove Video Codec From File Name":
   
 This button undoes the "Add Video Codec To File Name" actions. It doesn't simply reverse the changes like "undo", it checks the files names for "[" and removes anything between square brackets. Be careful with this one as it will remove anything in brackets, not just the video codec. I plan to have it check the list of known codecs before renaming the file, but that will have to wait. This feature is useful for when you need to update the codec type, as the "ADD" program skips any files that have codec information in the name already. That skipping speeds things up considerably when files don't change and only new ones are being added. It can cause problems though, as things get converted and the file name information becomes outdated. It is recommended to run the "Remove" operation, followed by the "Add" operation before trying to do any batch work with video files. I will likely combine the "Remove" and "Add" functions in the near future to make updating files easier. The program would "Remove" any codec information from the file names, then "Add" it back to get things up to date.  
-  ![VideoCodecRename_codec_removed](https://user-images.githubusercontent.com/57654891/119914837-29c3d480-bf2f-11eb-9bcf-55de89eb2163.png)
+  ![VideoCodecRename_remove](https://user-images.githubusercontent.com/57654891/119916406-7826a280-bf32-11eb-9fc2-3e79f1eae124.png)
 
 
 "Clear Output Display":
