@@ -142,6 +142,7 @@ def add_pressed(event):
     output_box.insert(1.0, '\n')
     
     while True:
+        try:
             for r, d, f in sorted(os.walk(path, topdown=True)):
                 for file in f:
                     Extension = os.path.splitext(file)[1] # Returns a tuple, with the extension at index 1
@@ -159,6 +160,25 @@ def add_pressed(event):
                                         rename(current, newName)
                                         output_box.insert('1.0', 'New name: ' + newName)
                                         output_box.insert(1.0, '\n')
+        except:
+            VideoCodecCounts['error'] += 1
+            output_box.insert("1.0", "**ERROR: " + str(current))
+            output_box.insert(1.0, "\n")
+            rename(current, current[0:-4] + '[ERROR]' + current[-4:])
+            output_box.insert("1.0", '**Offending File Marked')
+            output_box.insert(1.0, "\n")
+            pass
+        else:
+            output_box.insert(1.0, '\n')
+            output_box.insert('1.0', '-' * 20)
+            output_box.insert(1.0, '\n')
+            output_box.insert('1.0', 'Files Renamed: ' + str(TotalCount))
+            output_box.insert(1.0, '\n')
+            output_box.insert('1.0', 'Video Rename Operation Completed: ' + str(datetime.datetime.now()))
+            output_box.insert(1.0, '\n')
+            output_box.insert('1.0', '-' * 20)
+            output_box.insert(1.0, '\n')
+            break
                                     
                                     
 #----------------------------------------------------------
@@ -201,32 +221,27 @@ def find_videos_pressed(event):
                         if ex in file.lower():
                             current = os.path.join(r, file)
                             TotalCount += 1
-                            metadata = FFProbe(str(current))
-                            for stream in metadata.streams:
-                                codec = stream.codec()
-                                if stream.codec() in VideoCodecs:
-                                    VideoFileCount += 1
-                                    output_box.insert(1.0, '\n')
-                                    output_box.insert(1.0, current + ': ' + stream.codec())
-                                   
+                            output_box.insert(1.0, "\n")
+                            output_box.insert(1.0, current)
         except:
+            VideoCodecCounts['error'] += 1
+            output_box.insert("1.0", "**ERROR: " + str(current))
+            output_box.insert(1.0, "\n")
+            rename(current, current[0:-4] + '[ERROR]' + current[-4:])
+            output_box.insert("1.0", '**Offending File Marked')
+            output_box.insert(1.0, "\n")
             pass
         else:
             output_box.insert(1.0, '\n')
             output_box.insert('1.0', '-' * 20)
             output_box.insert(1.0, '\n')
-            output_box.insert(1.0, 'Video Files Found: ' + str(VideoFileCount))            
+            output_box.insert('1.0', 'Videos Found: ' + str(TotalCount))
             output_box.insert(1.0, '\n')
-            output_box.insert('1.0', 'Video File Search Completed: ' + str(datetime.datetime.now()))
+            output_box.insert('1.0', 'Video Search Operation Completed: ' + str(datetime.datetime.now()))
             output_box.insert(1.0, '\n')
             output_box.insert('1.0', '-' * 20)
             output_box.insert(1.0, '\n')
             break
-        
-    output_box.insert(50.0, '\n')
-    output_box.insert('50.0', '-' * 20)
-    output_box.insert(50.0, '\n')
-button_list_videos.bind('<Button-1>', find_videos_pressed)
 button_list_videos.bind('<Button-1>', find_videos_pressed)
 #----------------------------------------------------------
 #----------------------------------------------------------
@@ -304,3 +319,6 @@ button_remove.bind('<Button-1>', remove_pressed)
 #----------------------------------------------------------
 
 window.mainloop()
+
+
+
