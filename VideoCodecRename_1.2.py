@@ -1,5 +1,5 @@
 '''
-Release Notes: 1.0.2
+Release Notes: 1.2
 
 - Removed import serial line.
 - updated version number
@@ -43,7 +43,6 @@ path_entry = tk.Label(text='Working Directory')
 path_entry.pack()
 path_entry = tk.Entry(width=100)
 path_entry.pack()
-path_entry.insert('0', '/home/dustin/Videos/TEST')
 path = path_entry.get()
 #----------------------------------------------------------
 # List Button
