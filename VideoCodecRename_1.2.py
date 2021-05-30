@@ -180,19 +180,34 @@ button_add.bind('<Button-1>', add_pressed)
 #----------------------------------------------------------
 def find_videos_pressed(event):
     path = path_entry.get()
+    
+    TotalCount = 0
     VideoFileCount = 0
+    VideoExtensions = ['.mov', '.MOV', '.MP4', '.mp4', '.MKV', '.mkv', '.AVI', '.avi', '.M4V', '.m4v', '.MPG',  '.mpg']
+    files = []
+    current = 0
+    
+    output_box.insert('1.0', 'Video Search Operation Started: ' + str(datetime.datetime.now()))
+    output_box.insert(1.0, '\n')
+    output_box.insert('1.0', '-' * 20)
+    output_box.insert(1.0, '\n')
+    
     while True:
         try:
             for r, d, f in sorted(os.walk(path, topdown=True)):
-                for file in f:           
-                    current = os.path.join(r, file)
-                    metadata = FFProbe(str(current))
-                    for stream in metadata.streams:
-                        for codec in VideoCodecs:
-                            if codec in stream.codec():
-                                VideoFileCount += 1
-                                output_box.insert(1.0, '\n')
-                                output_box.insert(1.0, current + ': ' + stream.codec())
+                for file in f:
+                    Extension = os.path.splitext(file)[1] # Returns a tuple, with the extension at index 1
+                    for ex in VideoExtensions:
+                        if ex in file.lower():
+                            current = os.path.join(r, file)
+                            TotalCount += 1
+                            metadata = FFProbe(str(current))
+                            for stream in metadata.streams:
+                                codec = stream.codec()
+                                if stream.codec() in VideoCodecs:
+                                    VideoFileCount += 1
+                                    output_box.insert(1.0, '\n')
+                                    output_box.insert(1.0, current + ': ' + stream.codec())
                                    
         except:
             pass
@@ -211,6 +226,7 @@ def find_videos_pressed(event):
     output_box.insert(50.0, '\n')
     output_box.insert('50.0', '-' * 20)
     output_box.insert(50.0, '\n')
+button_list_videos.bind('<Button-1>', find_videos_pressed)
 button_list_videos.bind('<Button-1>', find_videos_pressed)
 #----------------------------------------------------------
 #----------------------------------------------------------
@@ -288,10 +304,3 @@ button_remove.bind('<Button-1>', remove_pressed)
 #----------------------------------------------------------
 
 window.mainloop()
-
-
-
-
-
-
-
