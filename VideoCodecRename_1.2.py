@@ -13,7 +13,7 @@ Release Notes: 1.2
 - Added file counts to all operations
 - Standardized all output formatting for all operations.
 - Set each operation to reset variable TotalCount after it ran to ensure accurate counts between operations.
-- 
+- Replaced <path = path_entry.get()> with <path = path_entry.get()>
 
 '''
 import tkinter as tk
@@ -129,8 +129,9 @@ def add_pressed(event):
     path = path_entry.get()
     
     TotalCount = 0
+    VideoCount = 0
 
-    VideoExtensions = ['.mov', '.MOV', '.MP4', '.mp4', '.MKV', '.mkv', '.AVI', '.avi', '.M4V', '.m4v', '.MPG',  '.mpg']
+    VideoExtensions = ['.mov', '.mp4', '.mkv', '.avi', '.m4v', '.mpg']
     VideoCodecs = ['utvideo', 'dnxhd', 'h265', 'h264', 'xvid', 'mpeg4', 'msmpeg4v3', 'error']
     VideoCodecCounts = {'utvideo': 0, 'dnxhd': 0, 'h265': 0, 'h264': 0, 'xvid': 0, 'mpeg4': 0, 'msmpeg4v3': 0, 'error': 0}
     files = []
@@ -145,16 +146,17 @@ def add_pressed(event):
         try:
             for r, d, f in sorted(os.walk(path, topdown=True)):
                 for file in f:
+                    TotalCount += 1
                     Extension = os.path.splitext(file)[1] # Returns a tuple, with the extension at index 1
                     if '[' not in file:
                         for ex in VideoExtensions:
                             if ex in file.lower():
-                                current = os.path.join(r, file)
-                                TotalCount += 1
+                                current = os.path.join(r, file)                                
                                 metadata = FFProbe(str(current))
                                 for stream in metadata.streams:
                                     codec = stream.codec()
                                     if stream.codec() in VideoCodecs:
+                                        VideoCount += 1
                                         VideoCodecCounts[codec] += 1
                                         newName = f'{current[0:-len(Extension)]}[{codec}]{Extension}'
                                         rename(current, newName)
@@ -162,18 +164,22 @@ def add_pressed(event):
                                         output_box.insert(1.0, '\n')
         except:
             VideoCodecCounts['error'] += 1
-            output_box.insert("1.0", "**ERROR: " + str(current))
-            output_box.insert(1.0, "\n")
             rename(current, current[0:-4] + '[ERROR]' + current[-4:])
-            output_box.insert("1.0", '**Offending File Marked')
+            TotalCount += 1
+            output_box.insert('1.0', 'New name: ' + newName)
             output_box.insert(1.0, "\n")
+
             pass
         else:
             output_box.insert(1.0, '\n')
             output_box.insert('1.0', '-' * 20)
             output_box.insert(1.0, '\n')
-            output_box.insert('1.0', 'Files Renamed: ' + str(TotalCount))
+            output_box.insert('1.0', 'Files Renamed: ' + str(VideoCount))
             output_box.insert(1.0, '\n')
+            output_box.insert('1.0', 'Files Scanned: ' + str(TotalCount))
+            output_box.insert(1.0, '\n')
+            output_box.insert(1.0, "Errors Ecountered: " + str(VideoCodecCounts['error']))
+            output_box.insert(1.0, "\n")
             output_box.insert('1.0', 'Video Rename Operation Completed: ' + str(datetime.datetime.now()))
             output_box.insert(1.0, '\n')
             output_box.insert('1.0', '-' * 20)
@@ -228,8 +234,7 @@ def find_videos_pressed(event):
             output_box.insert("1.0", "**ERROR: " + str(current))
             output_box.insert(1.0, "\n")
             rename(current, current[0:-4] + '[ERROR]' + current[-4:])
-            output_box.insert("1.0", '**Offending File Marked')
-            output_box.insert(1.0, "\n")
+            
             pass
         else:
             output_box.insert(1.0, '\n')
